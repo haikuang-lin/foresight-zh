@@ -2,6 +2,11 @@
 
 [English](README.md) · [简体中文](README_zh.md) · **繁體中文**
 
+<p align="center">
+  <img src="assets/poster_zh_tw.jpg" alt="Foresight 繁體中文版 - AI 本地會議記錄神器" width="420"><br>
+  <b>FB：Ryan 談 AI 治理與隱私</b> ｜ <b>GitHub：<a href="https://github.com/haikuang-lin/foresight-zh">https://github.com/haikuang-lin/foresight-zh</a></b>
+</p>
+
 讓 macOS 上的 Google AI Edge Foresight 支援**台灣繁體中文**（以及中英混合）轉寫，無需修改應用本身。
 另外可選：讓 Foresight 的聊天與會議摘要改用更大的本地模型（Qwen3.8-27B），代替自帶的 Gemma 4 E2B，並自動以繁體中文輸出。
 
