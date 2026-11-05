@@ -432,7 +432,7 @@ static void match_transcript_language(cJSON *msgs) {
     return;
   if (cjk_share(t) < 0.3) return;
   static const char note[] =
-      "\n\nLanguage: the transcript is in Chinese. Write all of your output in Simplified Chinese. "
+      "\n\nLanguage: the transcript is in Chinese. Write all of your output in Traditional Chinese (Taiwan). "
       "Keep the template's markdown headings (such as \"# Overview\" and \"# Details\") and any "
       "required JSON keys or field names exactly as specified, in English.";
   cJSON *first = cJSON_GetArrayItem(msgs, 0);

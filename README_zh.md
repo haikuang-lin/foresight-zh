@@ -1,6 +1,6 @@
 # foresight-zh
 
-[English](README.md) · **简体中文**
+[English](README.md) · **简体中文** · [繁體中文](README_zh-TW.md)
 
 让 macOS 上的 Google AI Edge Foresight 支持中文（以及中英混合）转写，无需修改应用本身。
 另外可选：让 Foresight 的聊天改用更大的本地模型（Qwen3.8-27B），代替自带的 Gemma 4 E2B。

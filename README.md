@@ -1,6 +1,6 @@
 # foresight-zh
 
-**English** · [简体中文](README_zh.md)
+**English** · [简体中文](README_zh.md) · [繁體中文](README_zh-TW.md)
 
 Chinese (and mixed Chinese/English) transcription for Google AI Edge Foresight on macOS,
 without modifying the app. Optionally, Foresight's chat runs on a bigger local model

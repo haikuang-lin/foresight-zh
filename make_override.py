@@ -14,8 +14,8 @@ def f_bytes(num, b):
     if isinstance(b, str): b = b.encode()
     return varint(num << 3 | 2) + varint(len(b)) + b
 
-INSTRUCTION = ("请逐字转写这段语音，保持说话时使用的语言。"
-               "中文一律用简体字书写，英文单词保持英文原样。只输出转写内容，不要翻译或解释。")
+INSTRUCTION = ("請逐字轉寫這段語音，保持說話時使用的語言。"
+               "中文一律用繁體字（台灣正體）書寫，英文單詞保持英文原樣。只輸出轉寫內容，不要翻譯或解釋。")
 
 prompt = (f_bytes(1, INSTRUCTION) + f_bytes(2, "<|turn>user\n") + f_bytes(3, "<|turn>model\n")
           + f_bytes(4, "<turn|>\n"))

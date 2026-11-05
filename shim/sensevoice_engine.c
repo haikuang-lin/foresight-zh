@@ -44,6 +44,12 @@ API(SherpaOnnxLinearResamplerReset);
 API(SherpaOnnxLinearResamplerResample);
 API(SherpaOnnxLinearResamplerResampleFree);
 
+typedef void *opencc_t;
+static opencc_t (*p_opencc_open)(const char *);
+static char *(*p_opencc_convert_utf8)(opencc_t, const char *, size_t);
+static void (*p_opencc_convert_utf8_free)(char *);
+static opencc_t g_opencc = (opencc_t)-1;
+
 typedef struct {
   const SherpaOnnxVoiceActivityDetector *vad;
   const SherpaOnnxLinearResampler *resampler;
@@ -92,6 +98,21 @@ static int load_symbols(void) {
   LOAD(SherpaOnnxLinearResamplerReset);
   LOAD(SherpaOnnxLinearResamplerResample);
   LOAD(SherpaOnnxLinearResamplerResampleFree);
+
+  void *oh = dlopen("/opt/homebrew/lib/libopencc.dylib", RTLD_NOW | RTLD_LOCAL);
+  if (!oh) oh = dlopen("libopencc.dylib", RTLD_NOW | RTLD_LOCAL);
+  if (oh) {
+    p_opencc_open = (__typeof__(p_opencc_open))dlsym(oh, "opencc_open");
+    p_opencc_convert_utf8 = (__typeof__(p_opencc_convert_utf8))dlsym(oh, "opencc_convert_utf8");
+    p_opencc_convert_utf8_free = (__typeof__(p_opencc_convert_utf8_free))dlsym(oh, "opencc_convert_utf8_free");
+    if (p_opencc_open && p_opencc_convert_utf8 && p_opencc_convert_utf8_free) {
+      g_opencc = p_opencc_open("/opt/homebrew/share/opencc/s2twp.json");
+      if (g_opencc == (opencc_t)-1) g_opencc = p_opencc_open("s2twp.json");
+      logf_("sensevoice: opencc s2twp %s", g_opencc != (opencc_t)-1 ? "enabled" : "failed to open config");
+    }
+  } else {
+    logf_("sensevoice: libopencc not found, keeping simplified Chinese");
+  }
   return 1;
 }
 
@@ -184,7 +205,16 @@ static int drain(Stream *s, SvResult *out, int max_out) {
       p_SherpaOnnxDecodeOfflineStream(g_rec, os);
       const SherpaOnnxOfflineRecognizerResult *r = p_SherpaOnnxGetOfflineStreamResult(os);
       if (r && r->text && r->text[0]) {
-        out[n].text = strdup(r->text);
+        char *converted = NULL;
+        if (g_opencc != (opencc_t)-1) {
+          converted = p_opencc_convert_utf8(g_opencc, r->text, (size_t)-1);
+        }
+        if (converted) {
+          out[n].text = strdup(converted);
+          p_opencc_convert_utf8_free(converted);
+        } else {
+          out[n].text = strdup(r->text);
+        }
         out[n].start_us = (long long)seg->start * 1000000 / VAD_RATE;
         out[n].end_us = (long long)(seg->start + seg->n) * 1000000 / VAD_RATE;
         n++;
